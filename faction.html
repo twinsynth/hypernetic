@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .container {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s, visibility 1s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 0;
+        }
+        .container.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }
+        h2, h3 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 3em;
+        }
+        .options-container {
+            display: flex;
+            justify-content: center;
+        }
+        .option, .character-option {
+            display: inline-block;
+            margin: 30px;
+            cursor: pointer;
+            padding: 20px 40px;
+            border-radius: 5px;
+            text-align: center;
+            transform: scale(1.5);
+            transition: transform 0.3s ease;
+        }
+        .option img {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+        }
+        .character-icon {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+            filter: brightness(0) invert(1);
+        }
+        .option span, .character-option span {
+            display: block;
+            margin-top: 15px;
+        }
+        .option:hover, .character-option:hover {
+            transform: scale(1.725);
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 20px 40px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .play-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .play-button img {
+            width: 75px;
+            height: 75px;
+        }
+        .play-button:hover {
+            filter: invert(1);
+        }
+        .final-selections, .next-button-container {
+            text-align: center;
+        }
+        .next-button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+        .selected {
+            background-color: rgba(64, 64, 64, 0.5);
+            border-radius: 20px;
+            padding: 10px;
+        }
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .result-icon {
+            display: block;
+            margin: 0 10px;
+            width: 50px;
+            height: 50px;
+            filter: brightness(0) invert(1);
+        }
+        .alignment-icon, .faction-icon {
+            display: block;
+            margin: 0 10px;
+            width: 50px;
+            height: 50px;
+        }
+        .ai-generated-image {
+            margin-top: 20px;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container active" id="slide0">
+        <h2>BEGIN</h2>
+        <div class="play-button" onclick="showNextSlide('slide0', 'slide1')">
+            <img src="https://www.svgrepo.com/show/333256/play-button.svg" alt="Play">
+        </div>
+    </div>
+    <div class="container" id="slide1">
+        <h2>Choose Your Alignment</h2>
+        <div class="options-container">
+            <div class="option" id="alignmentChaos" onclick="selectOption('alignment', 'Chaos')">
+                <img src="https://i.imgur.com/T53yMAY.png" alt="Chaos">
+                <span>Chaos</span>
+            </div>
+            <div class="option" id="alignmentOrder" onclick="selectOption('alignment', 'Order')">
+                <img src="https://i.imgur.com/QAe7kJ6.png" alt="Order">
+                <span>Order</span>
+            </div>
+        </div>
+        <div class="next-button-container" id="nextButtonAlignment">
+            <button onclick="showNextSlide('slide1', 'slide2')">Next</button>
+        </div>
+    </div>
+    <div class="container" id="slide2">
+        <h2>Choose Your Faction</h2>
+        <div class="options-container">
+            <div class="option" id="factionOrganic" onclick="selectOption('faction', 'Organic')">
+                <img src="https://i.imgur.com/GgT6oPe.png" alt="Organic" class="faction-icon">
+                <span>Organic</span>
+            </div>
+            <div class="option" id="factionCybernetic" onclick="selectOption('faction', 'Cybernetic')">
+                <img src="https://i.imgur.com/MsqDg8N.png" alt="Cybernetic" class="faction-icon">
+                <span>Cybernetic</span>
+            </div>
+            <div class="option" id="factionSynthetic" onclick="selectOption('faction', 'Synthetic')">
+                <img src="https://i.imgur.com/MjdiFks.png" alt="Synthetic" class="faction-icon">
+                <span>Synthetic</span>
+            </div>
+            <div class="option" id="factionPsionic" onclick="selectOption('faction', 'Psionic')">
+                <img src="https://i.imgur.com/rzhtGCz.png" alt="Psionic" class="faction-icon">
+                <span>Psionic</span>
+            </div>
+        </div>
+        <div class="next-button-container" id="nextButtonFaction">
+            <button onclick="showNextSlide('slide2', 'slide3')">Next</button>
+        </div>
+    </div>
+    <div class="container" id="slide3">
+        <h2>Choose Your Class</h2>
+        <div class="options-container">
+            <div class="character-option" id="classTank" onclick="selectOption('class', 'Tank')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Tank_icon.svg/1024px-Tank_icon.svg.png" alt="Tank" class="character-icon">
+                <span>Tank</span>
+            </div>
+            <div class="character-option" id="classDamage" onclick="selectOption('class', 'Damage')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Damage_icon.svg/1024px-Damage_icon.svg.png" alt="Damage" class="character-icon">
+                <span>Damage</span>
+            </div>
+            <div class="character-option" id="classSupport" onclick="selectOption('class', 'Support')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Support_icon.svg/640px-Support_icon.svg.png" alt="Support" class="character-icon">
+                <span>Support</span>
+            </div>
+        </div>
+        <div class="next-button-container" id="nextButtonClass">
+            <button onclick="showNextSlide('slide3', 'slide4')">Next</button>
+        </div>
+    </div>
+    <div class="container" id="slide4">
+        <div class="final-selections">
+            <h2 id="finalCharacterType">Your Character</h2>
+            <div class="result-icons">
+                <img id="finalAlignmentIcon" class="alignment-icon" src="" alt="Alignment Icon">
+                <img id="finalFactionIcon" class="faction-icon" src="" alt="Faction Icon">
+                <img id="finalCharacterIcon" class="result-icon" src="" alt="Class Icon">
+            </div>
+            <img id="aiGeneratedImage" class="ai-generated-image" src="" alt="AI Generated Image">
+        </div>
+    </div>
+
+    <script>
+        let character = {
+            alignment: 'None',
+            faction: 'None',
+            class: 'None'
+        };
+
+        const characterTypes = {
+            'ChaosOrganicTank': 'Kaiju Titan',
+            'ChaosOrganicDamage': 'Mutant Hunter',
+            'ChaosOrganicSupport': 'Hive Queen',
+            'ChaosCyberneticTank': 'Cyborg-Kaiju Titan',
+            'ChaosCyberneticDamage': 'Gridnet-Runner',
+            'ChaosCyberneticSupport': 'Gridnet-Engineer',
+            'ChaosSyntheticTank': 'Mecha Titan',
+            'ChaosSyntheticDamage': 'Android Assassin',
+            'ChaosSyntheticSupport': 'Nanobot Swarm',
+            'ChaosPsionicTank': 'Elemental Titan',
+            'ChaosPsionicDamage': 'Harbinger',
+            'ChaosPsionicSupport': 'Dark Seer',
+            'OrderOrganicTank': 'Terra Titan',
+            'OrderOrganicDamage': 'Bio-enhanced Soldier',
+            'OrderOrganicSupport': 'Bio-enhanced Medic',
+            'OrderCyberneticTank': 'Titan',
+            'OrderCyberneticDamage': 'Ghost Agent',
+            'OrderCyberneticSupport': 'K9 Medic',
+            'OrderSyntheticTank': 'MegaCity Titan',
+            'OrderSyntheticDamage': 'AI Avatars',
+            'OrderSyntheticSupport': 'Support Drone',
+            'OrderPsionicTank': 'Spectre Titan',
+            'OrderPsionicDamage': 'Spectre',
+            'OrderPsionicSupport': 'Warp Elves'
+        };
+
+        const characterIcons = {
+            'Tank': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Tank_icon.svg/1024px-Tank_icon.svg.png',
+            'Damage': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Damage_icon.svg/1024px-Damage_icon.svg.png',
+            'Support': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Support_icon.svg/640px-Support_icon.svg.png'
+        };
+
+        const alignmentIcons = {
+            'Chaos': 'https://i.imgur.com/T53yMAY.png',
+            'Order': 'https://i.imgur.com/QAe7kJ6.png'
+        };
+
+        const factionIcons = {
+            'Organic': 'https://i.imgur.com/GgT6oPe.png',
+            'Cybernetic': 'https://i.imgur.com/MsqDg8N.png',
+            'Synthetic': 'https://i.imgur.com/MjdiFks.png',
+            'Psionic': 'https://i.imgur.com/rzhtGCz.png'
+        };
+
+        async function generateAIImage(characterType) {
+            const input = {
+                prompt: `mdjrny-v4 style portrait of ${characterType}, intricate, elegant, highly detailed, digital painting, artstation, concept art, smooth, sharp focus, illustration, art by artgerm and greg rutkowski and alphonse mucha, 8k`
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/generate-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(input)
+                });
+                const data = await response.json();
+                console.log('Full prediction response:', data);
+
+                if (data && data.image) {
+                    const imageUrl = data.image;
+                    console.log('Image URL:', imageUrl);
+                    document.getElementById('aiGeneratedImage').src = imageUrl;
+                } else {
+                    console.error('Unexpected prediction response format:', data);
+                    alert('Failed to generate image. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during image generation:', error);
+                alert('An error occurred during image generation.');
+            }
+        }
+
+        function selectOption(type, value) {
+            character[type] = value;
+            document.querySelectorAll('.option, .character-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById(type + value).classList.add('selected');
+            if (type === 'alignment') {
+                document.getElementById('nextButtonAlignment').style.display = 'block';
+            } else if (type === 'faction') {
+                document.getElementById('nextButtonFaction').style.display = 'block';
+            } else if (type === 'class') {
+                document.getElementById('nextButtonClass').style.display = 'block';
+                const characterType = characterTypes[character.alignment + character.faction + character.class];
+                document.getElementById('finalCharacterType').textContent = characterType;
+                document.getElementById('finalCharacterIcon').src = characterIcons[character.class];
+                document.getElementById('finalAlignmentIcon').src = alignmentIcons[character.alignment];
+                document.getElementById('finalFactionIcon').src = factionIcons[character.faction];
+                generateAIImage(characterType);
+            }
+        }
+
+        function showNextSlide(currentSlideId, nextSlideId) {
+            document.getElementById(currentSlideId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(currentSlideId).style.visibility = 'hidden';
+                document.getElementById(nextSlideId).style.visibility = 'visible';
+                setTimeout(() => {
+                    document.getElementById(nextSlideId).classList.add('active');
+                    document.querySelectorAll('.next-button-container').forEach(button => {
+                        button.style.display = 'none'; // Hide next button initially on new slide
+                    });
+                }, 50); // Delay to ensure display change is rendered
+            }, 1000); // Duration of the fade out
+        }
+
+        function saveGame() {
+            localStorage.setItem('character', JSON.stringify(character));
+            alert('Game Saved!');
+        }
+
+        function loadGame() {
+            let savedCharacter = localStorage.getItem('character');
+            if (savedCharacter) {
+                character = JSON.parse(savedCharacter);
+                const characterType = characterTypes[character.alignment + character.faction + character.class];
+                document.getElementById('finalCharacterType').textContent = characterType;
+                document.getElementById('finalCharacterIcon').src = characterIcons[character.class];
+                document.getElementById('finalAlignmentIcon').src = alignmentIcons[character.alignment];
+                document.getElementById('finalFactionIcon').src = factionIcons[character.faction];
+                generateAIImage(characterType);
+                showNextSlide('slide0', 'slide4');
+            }
+        }
+
+        window.onload = () => {
+            document.getElementById('slide0').classList.add('active');
+        };
+    </script>
+</body>
+</html>
